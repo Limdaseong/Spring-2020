@@ -1,0 +1,29 @@
+@RequestMapping(value = "/", method = RequestMethod.GET)를 메소드 위에 말고도 class위에도 놓을 수 있다
+
+post는 insert / delete는 delete / 
+
+context:component 요거는 애노테이션 쓰게해주려고
+
+annotation-driven이 없으면 컨트롤러 없는거?
+
+네이밍 규칙 : 
+	동사 앞, 명사 뒤
+	
+	클래스 명 파스칼, 메소드명, 변수명(DB 관련X)
+	카멜 케이스 기법 사용
+	메소드명 앞에는 _(언더바) 붙인다.
+	변수명 단어 구분은 _(언더바)
+
+	MODEL
+	DMI(Domain) - select 결과용
+	DTO - select parameter 용
+	VO - insert, update, delete 용
+
+	CRUD
+	(DB)
+	ins
+	sel/ sel___List
+	upd	
+	del
+	ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+	
