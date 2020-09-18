@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0/EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.koreait.matzip.user.UserMapper">
+<!-- mapper의 namespace에는 풀네임 적고 
+mapper PUBLIC으로 바꾸고 두번째 ""칸에 config 대신 mapper 추가  -->
+	<insert id="insUser" parameterType="UserVO">
+		INSERT INTO t_user
+		(user_id, user_pw, salt, nm)
+		VALUES
+		(#{user_id}, #{user_pw}, #{salt}, #{nm})
+	</insert> <!-- 원래 EL식 썼던거랑 같음 // $은 그 값 그대로 #은 값에 맞춰서 넣어줌-->
+	
+	<select id="selUer" parameterType="UserDTO" resultType="UserDMI">
+		SELECT i_user, user_id, user_pw, salt, nm, profile_img, r_dt
+		FROM t_user
+		WHERE 
+		<if test="i_user > 0"> i_user = #{i_user}</if>
+		<if test="user_id != null and user_id != ''"> user_id = #{user_id}</if>
+	</select>
+</mapper>
