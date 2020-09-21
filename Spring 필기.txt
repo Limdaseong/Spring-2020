@@ -1,23 +1,23 @@
-@RequestMapping(value = "/", method = RequestMethod.GET)¸¦ ¸Ş¼Òµå À§¿¡ ¸»°íµµ classÀ§¿¡µµ ³õÀ» ¼ö ÀÖ´Ù
+ï»¿@RequestMapping(value = "/", method = RequestMethod.GET)ë¥¼ ë©”ì†Œë“œ ìœ„ì— ë§ê³ ë„ classìœ„ì—ë„ ë†“ì„ ìˆ˜ ìˆë‹¤
 
-post´Â insert / delete´Â delete / 
+postëŠ” insert / deleteëŠ” delete / 
 
-context:component ¿ä°Å´Â ¾Ö³ëÅ×ÀÌ¼Ç ¾²°ÔÇØÁÖ·Á°í
+context:component ìš”ê±°ëŠ” ì• ë…¸í…Œì´ì…˜ ì“°ê²Œí•´ì£¼ë ¤ê³ 
 
-annotation-drivenÀÌ ¾øÀ¸¸é ÄÁÆ®·Ñ·¯ ¾ø´Â°Å?
+annotation-drivenì´ ì—†ìœ¼ë©´ ì»¨íŠ¸ë¡¤ëŸ¬ ì—†ëŠ”ê±°?
 
-³×ÀÌ¹Ö ±ÔÄ¢ : 
-	µ¿»ç ¾Õ, ¸í»ç µÚ
+ë„¤ì´ë° ê·œì¹™ : 
+	ë™ì‚¬ ì•, ëª…ì‚¬ ë’¤
 	
-	Å¬·¡½º ¸í ÆÄ½ºÄ®, ¸Ş¼Òµå¸í, º¯¼ö¸í(DB °ü·ÃX)
-	Ä«¸á ÄÉÀÌ½º ±â¹ı »ç¿ë
-	¸Ş¼Òµå¸í ¾Õ¿¡´Â _(¾ğ´õ¹Ù) ºÙÀÎ´Ù.
-	º¯¼ö¸í ´Ü¾î ±¸ºĞÀº _(¾ğ´õ¹Ù)
+	í´ë˜ìŠ¤ ëª… íŒŒìŠ¤ì¹¼, ë©”ì†Œë“œëª…, ë³€ìˆ˜ëª…(DB ê´€ë ¨X)
+	ì¹´ë©œ ì¼€ì´ìŠ¤ ê¸°ë²• ì‚¬ìš©
+	ë©”ì†Œë“œëª… ì•ì—ëŠ” _(ì–¸ë”ë°”) ë¶™ì¸ë‹¤.
+	ë³€ìˆ˜ëª… ë‹¨ì–´ êµ¬ë¶„ì€ _(ì–¸ë”ë°”)
 
 	MODEL
-	DMI(Domain) - select °á°ú¿ë
-	DTO - select parameter ¿ë
-	VO - insert, update, delete ¿ë
+	DMI(Domain) - select ê²°ê³¼ìš©
+	DTO - select parameter ìš©
+	VO - insert, update, delete ìš©
 
 	CRUD
 	(DB)
@@ -25,5 +25,5 @@ annotation-drivenÀÌ ¾øÀ¸¸é ÄÁÆ®·Ñ·¯ ¾ø´Â°Å?
 	sel/ sel___List
 	upd	
 	del
-	¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ
+	ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡
 	

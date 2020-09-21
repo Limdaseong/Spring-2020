@@ -11,7 +11,7 @@ mapper PUBLIC으로 바꾸고 두번째 ""칸에 config 대신 mapper 추가  --
 		(#{user_id}, #{user_pw}, #{salt}, #{nm})
 	</insert> <!-- 원래 EL식 썼던거랑 같음 // $은 그 값 그대로 #은 값에 맞춰서 넣어줌-->
 	
-	<select id="selUer" parameterType="UserDTO" resultType="UserDMI">
+	<select id="selUser" parameterType="UserPARAM" resultType="UserDMI">
 		SELECT i_user, user_id, user_pw, salt, nm, profile_img, r_dt
 		FROM t_user
 		WHERE 

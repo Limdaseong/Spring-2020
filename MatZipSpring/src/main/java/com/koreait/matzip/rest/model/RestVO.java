@@ -1,6 +1,6 @@
-package com.koreait.matzip.user.model;
+package com.koreait.matzip.rest.model;
 
-public class RestaurantVO {
+public class RestVO {
 	private String nm;
 	private String addr;
 	private double lat;

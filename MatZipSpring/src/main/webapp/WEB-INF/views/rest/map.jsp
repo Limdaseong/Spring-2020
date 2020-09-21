@@ -53,10 +53,33 @@
 		level: 5 //지도의 레벨(확대, 축소 정도)
 	};
 
-	var map = new kakao.maps.Map(mapContainer, options);
+	const map = new kakao.maps.Map(mapContainer, options);
 	
 	function getRestaurantList() {
-		axios.get('/restaurant/ajaxGetList').then(function(res) {
+		const bounds = map.getBounds()
+		const southWest = bounds.getSouthWest()
+		const northEast = bounds.getNorthEast()
+		
+		/*
+		console.log('southWest : ' + southWest) 콘솔에 잘못된 값 적어 넣으면 에러 뜨면서 다른것들도 실행이 안됨
+		console.log('northEast : ' + northEast1)
+		*/
+		
+		const sw_lat = southWest.getLat()
+		const sw_lng = southWest.getLng()
+		const ne_lat = northEast.getLat()
+		const ne_lng = northEast.getLng()
+		
+		console.log('sw_lat : ' + sw_lat)
+		console.log('sw_lng : ' + sw_lng)
+		console.log('ne_lat : ' + ne_lat)
+		console.log('ne_lng : ' + ne_lng)
+		
+		axios.get('/rest/ajaxGetList', {
+			params: {
+				sw_lat, sw_lng, ne_lat, ne_lng
+			}
+		}).then(function(res) {
 			console.log(res.data)
 			
 			res.data.forEach(function(item) {					
@@ -64,7 +87,8 @@
 			})
 		})		
 	}
-	getRestaurantList()
+	
+	kakao.maps.event.addListener(map, 'dragend', getRestaurantList)
 	
 	//마커생성
 	function createMarker(item) {

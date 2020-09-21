@@ -22,14 +22,12 @@
 	<script>
 		function chkId() {
 			const user_id = frm.user_id.value
-			axios.get('/user/ajaxIdChk', {
-				params: {
-					user_id
-				}
+			axios.post('/user/ajaxIdChk', {
+					user_id // post 쓸거면 params:{}를 지워준다
 			}).then(function(res) {
-				if(res.data.result == 2) {
+				if(res.data == '2') {
 					IdChkResult.innerText = '사용할 수 있는 아이디입니다.'
-				} else if(res.data.result == 3) {
+				} else if(res.data == '3') {
 					IdChkResult.innerText = '중복된 아이디입니다.'
 				}
 			})
