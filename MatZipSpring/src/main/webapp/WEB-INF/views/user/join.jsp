@@ -17,6 +17,7 @@
 		<div><a href="/user/login">로그인</a></div>
 	
 	</div>
+</div>
 	
 	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 	<script>

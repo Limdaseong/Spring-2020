@@ -8,7 +8,6 @@ import com.koreait.matzip.SecurityUtils;
 import com.koreait.matzip.user.model.UserDMI;
 import com.koreait.matzip.user.model.UserPARAM;
 import com.koreait.matzip.user.model.UserVO;
-import com.mysql.cj.protocol.Security;
 
 @Service
 public class UserService {
@@ -34,6 +33,7 @@ public class UserService {
 		
 		param.setUser_pw(null);
 		param.setNm(dbUser.getNm());
+		param.setI_user(dbUser.getI_user());
 		param.setProfile_img(dbUser.getProfile_img());
 		return Const.SUCCESS;
 	}

@@ -24,6 +24,12 @@ public class UserController {
 	@Autowired // 각 상황의 타입에 맞는 IoC컨테이너 안에 존재하는 객체화된 Bean을 자동으로 주입해 줌
 						// 단 하나만 등록이 돼있어야함
 	private UserService service;
+	
+	@RequestMapping(value="/logout", method = RequestMethod.GET)
+	public String logout(HttpSession hs) {
+		hs.invalidate();
+		return "redirect:/";
+	}
 
 	@RequestMapping(value="/login", method = RequestMethod.GET)
 	public String login(Model model) {
