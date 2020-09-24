@@ -17,6 +17,27 @@
 		(#{nm}, #{addr}, #{lat}, #{lng}, #{cd_category}, #{i_user})
 	</insert>
 	
+	<insert id="insRestRecMenu" parameterType="RestRecMenuVO">
+		INSERT INTO t_restaurant_recommend_menu
+		(i_rest, seq, menu_nm, menu_price, menu_pic)
+		SELECT #{i_rest}, ifnull(max(seq), 0)+1, #{menu_nm}, #{menu_price}, #{menu_pic}
+		FROM t_restaurant_recommend_menu
+		WHERE i_rest = #{i_rest}		
+	</insert>
+	
+	<insert id="insRestMenus" parameterType="RestRecMenuVO">
+		INSERT INTO t_restaurant_menu
+		(i_rest, seq, menu_pic)
+		SELECT #{i_rest}, ifnull(max(seq), 0) + 1, #{menu_pic}
+		FROM t_restaurant_menu
+		WHERE i_rest = #{i_rest}
+	</insert>
+	
+	<select id="selRestChkUser" resultType="Integer" parameterType="Integer">
+		SELECT i_user FROM t_restaurant
+		WHERE i_rest = #{i_rest}
+	</select>
+	
 	<select id="selRest" parameterType="RestPARAM" resultType="RestDMI">
 		SELECT 
 			A.i_rest, A.nm, A.lat, A.lng, A.addr, A.i_user, A.hits
@@ -38,4 +59,59 @@
 		ON A.i_rest = D.i_rest
 		WHERE A.i_rest = #{i_rest}
 	</select>
+	
+	<select id="selRestRecMenus" parameterType="RestPARAM" resultType="RestRecMenuVO">
+		SELECT A.seq, A.menu_nm, A.menu_price, A.menu_pic
+		FROM t_restaurant_recommend_menu A
+		<if test="i_user > 0"> <!-- 내가 쓴 글이 맞는지 -->
+			INNER JOIN t_restaurant B
+			ON A.i_rest = B.i_rest
+			AND B.i_user = #{i_user}
+		</if>		
+		WHERE A.i_rest = #{i_rest}
+		<if test="seq > 0">
+			AND A.seq = #{seq}
+		</if>
+	</select>
+	
+	<select id="selRestMenus" parameterType="RestPARAM" resultType="RestRecMenuVO">
+		SELECT A.seq, A.menu_pic
+		FROM t_restaurant_menu A
+		WHERE A.i_rest = #{i_rest}
+		<if test="seq > 0">
+			AND A.seq = #{seq}
+		</if>
+	</select>
+	
+	<delete id="delRestRecMenu" parameterType="RestPARAM">
+		DELETE A FROM t_restaurant_recommend_menu A
+		INNER JOIN t_restaurant B
+		ON A.i_rest = B.i_rest
+		WHERE B.i_rest = #{i_rest}
+		AND B.i_user = #{i_user}
+		<if test="seq > 0">
+			AND A.seq = #{seq}
+		</if>
+	</delete>
+	
+	<delete id="delRestMenu" parameterType="RestPARAM">
+		DELETE A FROM t_restaurant_menu A
+		INNER JOIN t_restaurant B
+		ON A.i_rest = B.i_rest
+		WHERE B.i_rest = #{i_rest}
+		AND B.i_user = #{i_user}
+		<if test="seq > 0">
+			AND A.seq = #{seq}
+		</if>
+	</delete>
+	
+	<delete id="delRest" parameterType="RestPARAM">
+	<!-- 여러개의 처리를 하려면 TRANSACTION을 걸어야 한다
+		transaction은 servlet-context 들어가서 nameSpace 들어가서 tx를 추가해줘야 쓸 수 있다 -->
+		DELETE  FROM t_restaurant
+		WHERE i_rest = #{i_rest}
+		AND i_user = #{i_user}
+	</delete>
+	
+	
 </mapper>

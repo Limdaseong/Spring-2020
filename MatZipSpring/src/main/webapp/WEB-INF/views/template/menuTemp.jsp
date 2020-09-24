@@ -11,7 +11,7 @@
 	rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="/res/css/common.css">
 <c:forEach items="${css}" var="item">
-	<link rel="stylesheet" type="text/css" href="/res/css/${item}">
+	<link rel="stylesheet" type="text/css" href="/res/css/${item}.css">
 </c:forEach>
 </head>
 <body>

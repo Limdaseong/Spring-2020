@@ -31,7 +31,7 @@ CREATE TABLE t_restaurant(
 CREATE TABLE c_code_m(
 	i_m INT UNSIGNED PRIMARY KEY,
 	`desc` VARCHAR(30) DEFAULT '',
-	cd_nm VARCHAR(10) DEFAULT ''
+	cd_nm VARCHAR(20) DEFAULT ''
 );
 
 CREATE TABLE c_code_d(

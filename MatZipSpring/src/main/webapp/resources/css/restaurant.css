@@ -39,16 +39,24 @@
 	right: 10px;
 }
 
+
 .menuList {
 	display: flex;
 	height: 70px;
 }
 
 .menuList .menuItem {
-	display: inline-block;
+	position: relative;
 	width: 70px;
 	height: 70px;
-	color: white;
+	background-color: gray;
+}
+
+.menuList .menuItem .delIconContainer {
+	cursor: pointer;
+	position: absolute;
+	top: 1px;
+	right: 1px;
 }
 
 .menuList .menuItem:not(:first-child) {
@@ -67,7 +75,6 @@
 	justify-content: center;
 	align-items: center;
 }
-
 
 
 .restaurant-detail {

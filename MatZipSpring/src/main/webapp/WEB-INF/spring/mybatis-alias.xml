@@ -11,5 +11,7 @@
 		<typeAlias type="com.koreait.matzip.rest.model.RestPARAM" alias="RestPARAM" />
 		
 		<typeAlias type="com.koreait.matzip.model.CodeVO" alias="CodeVO"/>
+		
+		<typeAlias type="com.koreait.matzip.rest.model.RestRecMenuVO" alias="RestRecMenuVO"/>
 	</typeAliases>
 </configuration>

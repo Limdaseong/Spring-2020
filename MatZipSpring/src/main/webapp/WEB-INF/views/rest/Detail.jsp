@@ -1,15 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <div>
 	<div class="recMenuContainer">
-		<c:forEach items="${recommendMenuList}" var="item">
+		<c:forEach items="${recMenuList}" var="item">
 			<div class="recMenuItem" id="recMenuItem_${item.seq}">
 				<div class="pic">
 					<c:if test="${item.menu_pic != null and item.menu_pic != ''}">
-						<img src="/res/img/restaurant/${data.i_rest}/${item.menu_pic}">
+						<img src="/res/img/rest/${data.i_rest}/res_menu/${item.menu_pic}">
 					</c:if>
 				</div>
 				<div class="info">
@@ -37,7 +37,7 @@
 					<div>
 						<button type="button" onclick="addRecMenu()">추천 메뉴 추가</button>
 					</div>
-					<form id="recFrm" action="/rest/addRecMenusProc"
+					<form id="recFrm" action="/rest/recMenus"
 						enctype="multipart/form-data" method="post">
 						<input type="hidden" name="i_rest" value="${data.i_rest}">
 						<div id="recItem"></div>
@@ -49,7 +49,7 @@
 
 				<h2>- 메뉴 -</h2>
 				<div>
-					<form id="menuFrm" action="/rest/addMenusProc"
+					<form id="menuFrm" action="/rest/menus"
 						enctype="multipart/form-data" method="post">
 						<input type="hidden" name="i_rest" value="${data.i_rest}">
 						<input type="file" name="menu_pic" multiple>
@@ -68,8 +68,8 @@
 						</span>
 					</div>
 					<div class="status branch_none">
-						<span class="cnt hit">${data.hits}</span> 
-						<span class="cnt favorite">${data.cnt_favorite}</span>
+						<span class="cnt hit">${data.hits}</span> <span
+							class="cnt favorite">${data.cnt_favorite}</span>
 					</div>
 				</div>
 				<div>
@@ -89,9 +89,16 @@
 								<td>
 									<div class="menuList">
 										<c:if test="${fn:length(menuList) > 0}">
-											<c:forEach var="i" begin="0" end="${fn:length(menuList) > 3 ? 2 : fn:length(menuList) - 1}">
+											<c:forEach var="i" begin="0"
+												end="${fn:length(menuList) > 3 ? 2 : fn:length(menuList) - 1}">
 												<div class="menuItem">
-													<img src="/res/img/restaurant/${data.i_rest}/menu/${menuList[i].menu_pic}">
+													<img
+														src="/res/img/rest/${data.i_rest}/menu/${menuList[i].menu_pic}">
+													<c:if test="${loginUser.i_user == data.i_user}">
+														<div class="delIconContainer" onclick="delRecMenu(${item.seq})">
+															<span class="material-icons">clear</span>
+														</div>
+													</c:if>
 												</div>
 											</c:forEach>
 										</c:if>
@@ -115,15 +122,12 @@
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
-	function delRecMenu(i_rest, seq) {
+	function delRecMenu(seq) {
 		if(!confirm('삭제하시겠습니까?')) {
 			return
-		}	
+		}
 		
-		console.log('i_rest : ' + i_rest)
-		console.log('seq : ' + seq)
-		
-		axios.get('/restaurant/ajaxDelRecMenu', {
+		axios.get('/rest/ajaxDelRecMenu', {
 			params: {
 				i_rest: ${data.i_rest},
 				seq: seq
@@ -140,32 +144,49 @@
 		})
 	}
 		
-		var idx = 0;
-		
-		function addRecMenu() {
-			var div = document.createElement('div')
-			
-			var inputNm = document.createElement('input')
-			inputNm.setAttribute('type', 'text')
-			inputNm.setAttribute('name', 'menu_nm')
-			
-			var inputPrice = document.createElement('input')
-			inputPrice.setAttribute('type', 'number')
-			inputPrice.setAttribute('name', 'menu_price')
-			
-			var inputPic = document.createElement('input')
-			inputPic.setAttribute('type', 'file')
-			inputPic.setAttribute('name', 'menu_pic_' + idx++)
-			
-			div.append('메뉴 : ')
-			div.append(inputNm)
-			div.append('  가격 : ')
-			div.append(inputPrice)
-			div.append('  사진 : ')
-			div.append(inputPic)
-			
-			recItem.append(div)
+	function isDel() {
+		if(confirm('삭제하시겠습니까?')) {
+			location.href='/rest/del?i_rest=${data.i_rest}'
 		}
-		addRecMenu()
+	}
+	
+	var idx = 0;
+		
+	function addRecMenu() {
+		var div = document.createElement('div')
+		div.setAttribute('id', 'recMenu_' + idx++)
+		
+		
+		var inputNm = document.createElement('input')
+		inputNm.setAttribute('type', 'text')
+		inputNm.setAttribute('name', 'menu_nm')
+		
+		var inputPrice = document.createElement('input')
+		inputPrice.setAttribute('type', 'number')
+		inputPrice.setAttribute('name', 'menu_price')
+		
+		var inputPic = document.createElement('input')
+		inputPic.setAttribute('type', 'file')
+		inputPic.setAttribute('name', 'menu_pic')
+		
+		var delBtn = document.createElement('input')
+		delBtn.setAttribute('type', 'button')
+		delBtn.setAttribute('value', 'X')
+		delBtn.addEventListener('click', function() {
+			div.remove()
+		})
+		
+		
+		div.append('메뉴 : ')
+		div.append(inputNm)
+		div.append('  가격 : ')
+		div.append(inputPrice)
+		div.append('  사진 : ')
+		div.append(inputPic)
+		div.append(delBtn)
+		
+		recItem.append(div)
+	}
+	addRecMenu()
 	</script>
 </div>

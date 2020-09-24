@@ -17,10 +17,10 @@ public class LoginCheckInterceptor extends HandlerInterceptorAdapter {
 		String[] uriArr = uri.split("/");
 		
 		System.out.println("uriArr.length : " + uriArr.length);
-		if(uriArr[1].equals("res")) {  // 리소스 (js, img, css) 일차 주솟값이 res면 바로 통과
+		if(uri.equals("/")) {  // 리소스 (js, img, css) 일차 주솟값이 res면 바로 통과
 			return true;
-		} else if(uriArr.length < 3) {  // 
-			return false;
+		} else if(uriArr[1].equals("res")) {
+			return true;
 		}
 		
 		System.out.println("인터셉터!!");
