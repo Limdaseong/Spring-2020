@@ -45,7 +45,7 @@ public class UserController {
 		
 		if(result == Const.SUCCESS) {
 			hs.setAttribute(Const.LOGIN_USER, param);
-			return "redirect:/rest/map"; // response.sendRedirect() 서블릿 
+			return "redirect:/"; // response.sendRedirect() 서블릿 
 			// --> 서블릿(rest/map GET메소드로 감)
 		}
 		

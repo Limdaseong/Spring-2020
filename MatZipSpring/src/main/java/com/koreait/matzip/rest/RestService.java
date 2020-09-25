@@ -59,14 +59,6 @@ public class RestService {
 		mapper.delRestMenu(param);
 		mapper.delRest(param);
 	}
-
-	public int delRestRecMenu(RestPARAM param) {
-		return mapper.delRestRecMenu(param);
-	}
-
-	public int delRestMenu(RestPARAM param) {
-		return mapper.delRestMenu(param);
-	}
 	
 	public List<RestRecMenuVO> selRestMenus(RestPARAM param){
 		return mapper.selRestMenus(param);
@@ -112,13 +104,14 @@ public class RestService {
 		return i_rest;
 	}
 
-	public int delRecMenu(RestPARAM param, String realPath) {
+	public int delRestRecMenu(RestPARAM param, String realPath) {
 		// 파일 삭제
 		List<RestRecMenuVO> list = mapper.selRestRecMenus(param);
 		// 리스트 보내는 부분이지만 i_user까지 같이 보내줌
 		if (list.size() == 1) { // 사이즈가 1이 맞는지 if 1이 넘어왔다면 내가 쓴 글이 맞음
 			RestRecMenuVO item = list.get(0);
 
+			// null.equals()는 되지 않는다 // &&은 앞에서부터 체크함 but &은 다 체크함
 			if (!item.getMenu_pic().equals("") && item.getMenu_pic() == null) { // 메뉴값이 빈칸이 아니라면
 				File file = new File(realPath + item.getMenu_pic());
 
@@ -130,6 +123,19 @@ public class RestService {
 			}
 		}
 		return mapper.delRestRecMenu(param);
+	}
+	
+	public int delRestMenu(RestPARAM param) {
+		if(param.getMenu_pic() != null && "".equals(param.getMenu_pic())) {
+			String path = Const.realPath + "/resources/img/rest/" + param.getI_rest() + "/menu/";
+			
+			if(FileUtils.delFile(path + param.getMenu_pic())) {
+				return mapper.delRestMenu(param); // 0 or 1
+			} else {
+				return Const.FAIL;
+			}
+		}
+		return mapper.delRestMenu(param);
 	}
 
 	public int insRestMenus(RestFile param, int i_user) {
