@@ -112,6 +112,12 @@
 		
 		var centerSpan = document.createElement('span')
 		centerSpan.className = 'center'
+		
+		var restNm = item.nm
+		if(item.is_favorite == 1) {
+			restNm += ' 🖤'
+		}
+		
 		centerSpan.innerText = item.nm
 		
 		content.appendChild(leftSpan)

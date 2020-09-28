@@ -8,12 +8,26 @@ public class UserVO {
 	private String salt;
 	private String profile_img;
 	private String r_dt;
+	private int i_rest;
+	private String proc_type;
 	
 	public int getI_user() {
 		return i_user;
 	}
 	public void setI_user(int i_user) {
 		this.i_user = i_user;
+	}
+	public int getI_rest() {
+		return i_rest;
+	}
+	public void setI_rest(int i_rest) {
+		this.i_rest = i_rest;
+	}
+	public String getProc_type() {
+		return proc_type;
+	}
+	public void setProc_type(String proc_type) {
+		this.proc_type = proc_type;
 	}
 	public String getUser_id() {
 		return user_id;

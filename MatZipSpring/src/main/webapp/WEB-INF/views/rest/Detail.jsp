@@ -4,7 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <!-- 다운받아서 쓰는 거랑 그냥 쓰는거랑은 저쪽 서버가 터지면 못쓰는 정도 차이다 -->
-<div style="height: 100%;">
+<div>
 	<div class="recMenuContainer">
 		<c:forEach items="${recMenuList}" var="item">
 			<div class="recMenuItem" id="recMenuItem_${item.seq}">
@@ -65,6 +65,12 @@
 				<div id="detail-header">
 					<div class="restaurant_title_wrap">
 						<h1 class="restaurant_name">${data.nm}</h1>
+						<c:if test="${loginUser != null}">
+							<span id="favorite" class="material-icons" onclick="toggleFavorite()">
+								<c:if test="${data.is_favorite == 1}">favorite</c:if>
+								<c:if test="${data.is_favorite == 0}">favorite_border</c:if>
+							</span>
+						</c:if>
 					</div>
 					<div class="status branch_none">
 						<span class="cnt hit">${data.hits}</span> <span
@@ -110,6 +116,11 @@
 				<!-- If we need navigation buttons -->
 				<div class="swiper-button-prev"></div>
 				<div class="swiper-button-next"></div>
+				<c:if test="${loginUser.i_user == data.i_user}">
+					<div class="imgDel">
+						<span class="material-icons" onclick="delMenu()">delete</span>
+					</div>
+				</c:if>
 			</div>
 		</div>
 		<span class="material-icons" onclick="closeCarousel()">clear</span>
@@ -119,6 +130,58 @@
 	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 	<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 	<script>
+	function toggleFavorite() {
+		console.log('favorite : ' + favorite.innerText.trim())
+		console.log('favorite : ' + (favorite.innerText.trim() == 'favorite'))
+		
+		let parameter = {
+			params: {
+				i_rest: ${data.i_rest}	
+			}
+		}
+		
+		var icon = favorite.innerText.trim()
+		
+		switch(icon) {
+		case 'favorite':
+			parameter.params.proc_type = 'del'
+			break;
+		case 'favorite_border':
+			parameter.params.proc_type = 'ins'
+			break;
+		}
+		
+		axios.get('/user/ajaxToggleFavorite', parameter).then(function(res) {
+			if(res.data == 1) {
+				favorite.innerText = (icon == 'favorite' ? 'favorite_border' : 'favorite')
+			}
+		})
+		
+	}
+	
+	function delMenu() {
+		if(!confirm('삭제하시겠습니까?')) { return }		
+		const obj = menuList[mySwiper.realIndex]
+		
+		if(obj != undefined) {
+			//서버 삭제 요청!
+			axios.get('/rest/ajaxDelMenu', {
+				params: {
+					i_rest: ${data.i_rest},
+					seq: obj.seq,
+					menu_pic: obj.menu_pic
+				}
+			}).then(function(res) {
+				if(res.data == 1) {
+					menuList.splice(mySwiper.realIndex, 1)
+					refreshMenu()
+				} else {
+					alert('메뉴를 삭제할 수 없습니다.')
+				}
+			})	
+		}
+	}
+
 	function closeCarousel() {
 		carouselContainer.style.opacity = 0
 		carouselContainer.style.zIndex = -10
@@ -129,7 +192,7 @@
 		carouselContainer.style.opacity = 1
 		carouselContainer.style.zIndex = 40
 	}
-	
+
 	var mySwiper = new Swiper('.swiper-container', {
 		  // Optional parameters
 		  direction: 'horizontal',
@@ -181,116 +244,88 @@
 			openCarousel(idx + 1)
 		})
 		
+		div.append(img)
 		
+		conMenuList.append(div)
+		//메인 화면에서 메뉴 이미지 디스플레이 ------------------------- [end]
+		
+		//팝업 화면에서 메뉴 이미지 디스플레이 ------------------------- [start]
 		const swiperDiv = document.createElement('div')
 		swiperDiv.setAttribute('class', 'swiper-slide')
 		
 		const swiperImg = document.createElement('img')
 		swiperImg.setAttribute('src', `/res/img/rest/${data.i_rest}/menu/\${item.menu_pic}`)
 		
+		
 		swiperDiv.append(swiperImg)
 		
 		mySwiper.appendSlide(swiperDiv);
-		
-		div.append(img)
-		
-		if(${loginUser.i_user == data.i_user}) {
-			// 그냥 if로 쓰면 세션에 접근하질 못함
-			const delDiv = document.createElement('div')
-			delDiv.setAttribute('class', 'delIconContainer')
-			delDiv.addEventListener('click', function() {
-				if(idx > -1) {
-					//서버 삭제 요청!
-					axios.get('/rest/ajaxDelMenu', {
-						params: {
-							i_rest: ${data.i_rest},
-							seq: item.seq,
-							menu_pic: item.menu_pic
-						}
-					}).then(function(res) {
-						if(res.data == 1) {
-							menuList.splice(idx, 1)
-							refreshMenu()
-						} else {
-							alert('메뉴를 삭제할 수 없습니다.')
-						}
-					})	
+	}
+	
+	
+		//팝업 화면에서 메뉴 이미지 디스플레이 ------------------------- [end]
+	if(${loginUser.i_user == data.i_user}) {
+		function delRecMenu(seq) {
+			if(!confirm('삭제하시겠습니까?')) {
+				return
+			}	
+			console.log('seq : ' + seq)
+			
+			axios.get('/rest/ajaxDelRecMenu', {
+				params: {
+					i_rest: ${data.i_rest},
+					seq: seq
+				}
+			}).then(function(res) {
+				console.log(res)
+				if(res.data == 1) {
+					//엘리먼트 삭제
+					var ele = document.querySelector('#recMenuItem_' + seq)
+					ele.remove()
 				}
 			})
+		}
+		
+	
+		var idx = 0;
+		function addRecMenu() {
+			var div = document.createElement('div')
+			div.setAttribute('id', 'recMenu_' + idx++)
 			
-			const span = document.createElement('span')
-			span.setAttribute('class', 'material-icons')
-			span.innerText = 'clear'
+			var inputNm = document.createElement('input')
+			inputNm.setAttribute('type', 'text')
+			inputNm.setAttribute('name', 'menu_nm')
+			var inputPrice = document.createElement('input')
+			inputPrice.setAttribute('type', 'number')
+			inputPrice.setAttribute('name', 'menu_price')
+			inputPrice.value = '0'
+			var inputPic = document.createElement('input')
+			inputPic.setAttribute('type', 'file')
+			inputPic.setAttribute('name', 'menu_pic')
+			var delBtn = document.createElement('input')
+			delBtn.setAttribute('type', 'button')
+			delBtn.setAttribute('value', 'X')		
+			delBtn.addEventListener('click', function() {
+				div.remove()
+			})		
+			div.append('메뉴: ')
+			div.append(inputNm)
+			div.append(' 가격: ')
+			div.append(inputPrice)
+			div.append(' 사진: ')
+			div.append(inputPic)
+			div.append(delBtn)
 			
-			delDiv.append(span)
-			div.append(delDiv)
+			recItem.append(div)
 		}
-		conMenuList.append(div)
-	}
-	
-	function delRecMenu(seq) {
-		if(!confirm('삭제하시겠습니까?')) {
-			return
-		}
-		
-		axios.get('/rest/ajaxDelRecMenu', {
-			params: {
-				i_rest: ${data.i_rest},
-				seq: seq
-				// 여기서 적는 EL식은 고정값이다 EL식은 자바스크립트에서 쓰는게 아니라 서버(자바)에서 쓰는 것이다
-				// 자바 객체는 서버에서만 쓰는 것이다
+		function isDel() {
+			if(confirm('삭제 하시겠습니까?')) {
+				location.href = '/rest/del?i_rest=${data.i_rest}'
 			}
-		}).then(function(res) {
-			console.log(res)
-			if(res.data == 1) {
-				//엘리먼트 삭제
-				var ele = document.querySelector('#recMenuItem_' + seq)
-				ele.remove()
-			}
-		})
-	}
-		
-	
-	var idx = 0;
-	function addRecMenu() {
-		var div = document.createElement('div')
-		div.setAttribute('id', 'recMenu_' + idx++)
-		
-		var inputNm = document.createElement('input')
-		inputNm.setAttribute('type', 'text')
-		inputNm.setAttribute('name', 'menu_nm')
-		var inputPrice = document.createElement('input')
-		inputPrice.setAttribute('type', 'number')
-		inputPrice.setAttribute('name', 'menu_price')
-		inputPrice.value = '0'
-		var inputPic = document.createElement('input')
-		inputPic.setAttribute('type', 'file')
-		inputPic.setAttribute('name', 'menu_pic')
-		var delBtn = document.createElement('input')
-		delBtn.setAttribute('type', 'button')
-		delBtn.setAttribute('value', 'X')		
-		delBtn.addEventListener('click', function() {
-			div.remove()
-		})		
-		div.append('메뉴: ')
-		div.append(inputNm)
-		div.append(' 가격: ')
-		div.append(inputPrice)
-		div.append(' 사진: ')
-		div.append(inputPic)
-		div.append(delBtn)
-		
-		recItem.append(div)
-	}
-	function isDel() {
-		if(confirm('삭제 하시겠습니까?')) {
-			location.href = '/rest/del?i_rest=${data.i_rest}'
 		}
-	}
-	addRecMenu()
+		addRecMenu()
 	
 	}
-	
 	ajaxSelMenuList()
 	</script>
 </div>

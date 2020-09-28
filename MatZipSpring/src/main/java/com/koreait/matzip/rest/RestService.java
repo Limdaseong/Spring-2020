@@ -3,7 +3,9 @@ package com.koreait.matzip.rest;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,6 +49,25 @@ public class RestService {
 		return mapper.insRest(param);
 	}
 
+	public void addHits(RestPARAM param, HttpServletRequest req) {
+		// 현재 로그인한 사람의 pk값을 받아와야 하기 때문에 httpservletrequest 쓰는 것
+		
+		String myIp = req.getRemoteAddr(); // 현재 접속한 사람의 ip주소값
+		ServletContext ctx = req.getServletContext();
+		// 개인용 : 페이지 컨텍스트, 세션, 리퀘스트  // 공용 : 애플리케이션
+		
+		int i_user = SecurityUtils.getLoginUserPk(req);
+		
+		String currentRestReadIp = (String)ctx.getAttribute(Const.CURRENT_REST_READ_IP + param.getI_rest());
+		if(currentRestReadIp == null || !currentRestReadIp.equals(myIp)) {
+			//조회수 올림 처리 할거임
+			param.setI_user(i_user); // 내가 쓴 글이면 조회수 안 올라가게 쿼리문으로 막는다
+			mapper.updAddHits(param);
+			ctx.setAttribute(Const.CURRENT_REST_READ_IP + param.getI_rest(), myIp);
+		}
+		
+	}
+
 	public List<CodeVO> selCategoryList() {
 		CodeVO p = new CodeVO();
 		p.setI_m(1); // 음식적 카테고리 코드 = 1
@@ -59,11 +80,11 @@ public class RestService {
 		mapper.delRestMenu(param);
 		mapper.delRest(param);
 	}
-	
-	public List<RestRecMenuVO> selRestMenus(RestPARAM param){
+
+	public List<RestRecMenuVO> selRestMenus(RestPARAM param) {
 		return mapper.selRestMenus(param);
 	}
-	
+
 	public int insRecMenus(MultipartHttpServletRequest mReq) {
 		int i_rest = Integer.parseInt(mReq.getParameter("i_rest"));
 		int i_user = SecurityUtils.getLoginUserPk(mReq.getSession());
@@ -96,8 +117,8 @@ public class RestService {
 			String saveFileNm = FileUtils.saveFile(path, mf);
 			vo.setMenu_pic(saveFileNm);
 		}
-		
-		for(RestRecMenuVO vo : list) {
+
+		for (RestRecMenuVO vo : list) {
 			mapper.insRestRecMenu(vo);
 		}
 
@@ -124,12 +145,12 @@ public class RestService {
 		}
 		return mapper.delRestRecMenu(param);
 	}
-	
+
 	public int delRestMenu(RestPARAM param) {
-		if(param.getMenu_pic() != null && "".equals(param.getMenu_pic())) {
+		if (param.getMenu_pic() != null && "".equals(param.getMenu_pic())) {
 			String path = Const.realPath + "/resources/img/rest/" + param.getI_rest() + "/menu/";
-			
-			if(FileUtils.delFile(path + param.getMenu_pic())) {
+
+			if (FileUtils.delFile(path + param.getMenu_pic())) {
 				return mapper.delRestMenu(param); // 0 or 1
 			} else {
 				return Const.FAIL;
@@ -174,6 +195,5 @@ public class RestService {
 		}
 		return false;
 	}
-
 
 }

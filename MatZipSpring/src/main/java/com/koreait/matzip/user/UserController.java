@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.koreait.matzip.Const;
+import com.koreait.matzip.SecurityUtils;
 import com.koreait.matzip.ViewRef;
 import com.koreait.matzip.user.model.UserPARAM;
 import com.koreait.matzip.user.model.UserVO;
@@ -94,5 +95,15 @@ public class UserController {
 		
 		
 		return String.valueOf(result); // 리턴에 redirect가 없으면 그값 자체를 응답
+	}
+	
+	@RequestMapping(value="/ajaxToggleFavorite", method = RequestMethod.GET)
+	@ResponseBody // 이것이 없다면 jsp 파일을 찾았을 것이다 // 얘가 적혀 있으면 값을 return해 줌
+	public int ajaxToggleFavorite(UserPARAM param, HttpSession hs) {
+		// ajax를 get방식으로 받을 때에는 @RequestBody를 없애야 한다 
+		int i_user = SecurityUtils.getLoginUserPk(hs);
+		param.setI_user(i_user);		
+		
+		return service.ajaxToggleFavorite(param); // 리턴에 redirect가 없으면 그값 자체를 응답
 	}
 }

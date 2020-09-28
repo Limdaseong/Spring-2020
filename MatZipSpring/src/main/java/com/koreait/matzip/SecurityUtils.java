@@ -22,12 +22,13 @@ public class SecurityUtils {
 		return getLoginUser(request) == null;
 	}
 	
-	public static int getLoginUserPk(HttpSession hs) {
-		return ((UserVO)hs.getAttribute(Const.LOGIN_USER)).getI_user();
+	public static int getLoginUserPk(HttpServletRequest request) {
+		return getLoginUserPk(request.getSession());
 	}
 	
-	public static int getLoginUserPk(HttpServletRequest request) {
-		return getLoginUser(request).getI_user();
+	public static int getLoginUserPk(HttpSession hs) {
+		UserVO loginUser = (UserVO)hs.getAttribute(Const.LOGIN_USER);
+		return loginUser == null ? 0 : loginUser.getI_user();
 	}
 	
 	public static UserVO getLoginUser(HttpServletRequest request) {

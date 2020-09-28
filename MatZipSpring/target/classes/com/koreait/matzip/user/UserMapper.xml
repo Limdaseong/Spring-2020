@@ -11,6 +11,13 @@ mapper PUBLIC으로 바꾸고 두번째 ""칸에 config 대신 mapper 추가  --
 		(#{user_id}, #{user_pw}, #{salt}, #{nm})
 	</insert> <!-- 원래 EL식 썼던거랑 같음 // $은 그 값 그대로 #은 값에 맞춰서 넣어줌-->
 	
+	<insert id="insFavorite" parameterType="UserPARAM">
+		INSERT INTO t_user_favorite
+		(i_rest, i_user) 
+		VALUES
+		(#{i_rest}, #{i_user})
+	</insert>
+	
 	<select id="selUser" parameterType="UserPARAM" resultType="UserDMI">
 		SELECT i_user, user_id, user_pw, salt, nm, profile_img, r_dt
 		FROM t_user
@@ -18,4 +25,10 @@ mapper PUBLIC으로 바꾸고 두번째 ""칸에 config 대신 mapper 추가  --
 		<if test="i_user > 0"> i_user = #{i_user}</if>
 		<if test="user_id != null and user_id != ''"> user_id = #{user_id}</if>
 	</select>
+	
+	<delete id="delFavorite" parameterType="UserPARAM">
+		DELETE FROM t_user_favorite
+		WHERE i_rest = #{i_rest}
+		AND i_user = #{i_user}
+	</delete>
 </mapper>

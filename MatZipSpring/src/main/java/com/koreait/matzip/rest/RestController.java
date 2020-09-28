@@ -2,13 +2,14 @@ package com.koreait.matzip.rest;
 
 import java.util.List;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -39,12 +40,15 @@ public class RestController {
 	}
 	
 	@RequestMapping(value="/ajaxGetList", produces = "application/json; charset=utf8") // 마커 인코딩 설정
-	@ResponseBody public List<RestDMI> ajaxGetList(RestPARAM param) {
+	@ResponseBody public List<RestDMI> ajaxGetList(RestPARAM param, HttpSession hs) {
 		// 객체를 반환하려면 ResponseBody 필요함
 //		System.out.println("sw_lat : " + param.getSw_lat());
 //		System.out.println("sw_lng : " + param.getSw_lng());
 //		System.out.println("ne_lat : " + param.getNe_lat());
 //		System.out.println("ne_lng : " + param.getNe_lng());
+		int i_user = SecurityUtils.getLoginUserPk(hs);
+		param.setI_user(i_user);
+		// 찜했는지 안했는지 알기 위해 i_user 값 넣음
 		return service.selRestList(param);
 	}
 	
@@ -67,7 +71,12 @@ public class RestController {
 	}
 	// 새로고침보다는 서버를 껐다가 다시 켜기
 	@RequestMapping(value = "/detail", method = RequestMethod.GET)
-	public String detail(Model model, RestPARAM param) {
+	public String detail(Model model, RestPARAM param, HttpServletRequest req) {
+		service.addHits(param, req);
+		
+		int i_user = SecurityUtils.getLoginUserPk(req);
+		param.setI_user(i_user);
+
 		RestDMI data = service.selRest(param);	
 		//List<RestRecMenuVO> item = service.selRestRecMenus(param);
 		model.addAttribute("recMenuList", service.selRestRecMenus(param));

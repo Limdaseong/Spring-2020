@@ -18,6 +18,9 @@ public interface RestMapper {
 	int insRestRecMenu(RestRecMenuVO param);
 	int selRestChkUser(int param);
 	// 성공했는지 안했는지 알기 위해 int형
+	
+	int updAddHits(RestPARAM param);
+	
 	RestDMI selRest(RestPARAM param);
 	int delRestRecMenu(RestPARAM param);
 	int delRestMenu(RestPARAM param);
